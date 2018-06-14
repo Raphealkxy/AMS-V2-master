@@ -1,0 +1,7 @@
+spring:
+        datasource:
+            type: com.alibaba.druid.pool.DruidDataSource
+            driverClassName: com.mysql.jdbc.Driver
+            url: jdbc:mysql://localhost:3306/ams-v2?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+            username: root
+            password: kxy1277609958

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>考勤单管理</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="../../css/main.css">
+<script src="../../libs/jquery.min.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../libs/bootstrap.min.js"></script>
+<script src="../../libs/vue.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+<script src="../../js/common.js"></script>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.createName" @keyup.enter="query" placeholder="创建人">
+			</div>
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.courseName" @keyup.enter="query" placeholder="课程名称">
+			</div>
+			<a class="btn btn-default" @click="query">查询</a>
+			<a v-if="hasPermission('sys:attlist:save')" class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			<a v-if="hasPermission('sys:attlist:delete')" class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			<a v-if="hasPermission('sys:attlist:detall')" class="btn btn-primary" @click="detall"><i class="fa fa-clone"></i>&nbsp;详情</a>
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+    <!---->
+    <div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">{{title}}</div>
+		<form class="form-horizontal" method="post" id="uploadForom" enctype="multipart/form-data">
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">考勤编号</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="attlist.attCode" disabled="disabled"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">课程名称</div>
+				<div class="col-sm-10">
+					<input type="text" required="required" class="form-control" v-model="attlist.courseName" disabled="disabled"/>
+				</div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">学期</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="attlist.termNum" disabled="disabled"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">创建人</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="attlist.createName" disabled="disabled"/>
+			    </div>
+			</div>
+			<div class="form-group">
+			   	<div class="col-sm-2 control-label">创建时间</div>
+			   	<div class="col-sm-10">
+			      <input type="text" class="form-control" v-model="attlist.createTime" disabled="disabled"/>
+			    </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">考勤照片</div>
+				<div class="col-sm-10">
+					<input type="file"   id="picFile" name="picFile" value="选择图片">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div>
+				<div class="col-sm-10">
+					<input type="button" class="btn btn-primary" @click="upload" value="上传"/>
+					<a class="btn btn-primary" @click="reload">&nbsp;返回</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div v-show="!showList" class="panel panel-default">
+		<div class="panel-heading">出勤情况</div>
+		<br>
+		<div class="grid-btn">
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.loginNum" placeholder="学号">
+			</div>
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.userName"  placeholder="姓名">
+			</div>
+			<a class="btn btn-default" @click="detallReload">查询</a>
+			<a class="btn btn-primary" @click="att"><i class="fa fa-check-square-o"></i>&nbsp;更改为出勤</a>
+			<a class="btn btn-danger" @click="unAtt"><i class="fa fa-window-close-o"></i>&nbsp;更改为缺勤</a>
+			<a class="btn btn-warning" @click="leave"><i class="fa fa-code-fork"></i>&nbsp;更改为请假</a>
+			<a class="btn btn-default" @click="reload">&nbsp;返回</a>
+		</div>
+		<table id="detallGrid"></table>
+		<div id="detallGridPager"></div>
+	</div>
+</div>
+
+
+<script src="../../js/modules/ams/attlist.js"></script>
+</body>
+</html>

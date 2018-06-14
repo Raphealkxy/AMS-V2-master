@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eric.modules.ams.dao.AmsAttdetallDao">
+    <select id="selectAttlistIdsByLoginNum" resultType="java.lang.Long">
+      select DISTINCT(attlist_id) from ams_attdetall WHERE login_num  = #{loginNum}
+    </select>
+</mapper>

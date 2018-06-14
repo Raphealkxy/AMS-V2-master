@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eric.modules.ams.dao.AmsCourseDao">
+    <select id="queryBindedStudent" parameterType="com.eric.modules.sys.param.SearchChoseParam"
+            resultType="com.eric.modules.sys.entity.SysUserEntity">
+        SELECT
+            u.user_id,
+            u.login_num,
+            u.user_name,
+            u.dept_name
+        FROM
+            ams_course_student acs
+            LEFT JOIN sys_user u ON acs.student_id = u.user_id
+        WHERE
+            u.user_type = 1
+            AND u.status = 1
+            AND acs.course_id = ${param.courseId}
+            <if test="param.loginNum != null and param.loginNum.trim() != ''">
+                AND u.login_num like concat('%',#{param.loginNum},'%')
+            </if>
+            <if test="param.userName !=null and param.userName.trim() !=''">
+              AND u.user_name LIKE  concat('%',#{param.userName},'%')
+            </if>
+    </select>
+    
+    <select id="queryBindedStudentIds" resultType="long">
+        SELECT
+            student_id
+        FROM
+            ams_course_student
+        WHERE
+            course_id = ${courseId}
+    </select>
+</mapper>

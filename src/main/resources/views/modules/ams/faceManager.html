@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>管理员列表</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="../../css/bootstrap.min.css">
+<link rel="stylesheet" href="../../css/font-awesome.min.css">
+<link rel="stylesheet" href="../../plugins/jqgrid/ui.jqgrid-bootstrap.css">
+<link rel="stylesheet" href="../../plugins/ztree/css/metroStyle/metroStyle.css">
+<link rel="stylesheet" href="../../css/main.css">
+<script src="../../libs/jquery.min.js"></script>
+<script src="../../plugins/layer/layer.js"></script>
+<script src="../../libs/bootstrap.min.js"></script>
+<script src="../../libs/vue.min.js"></script>
+<script src="../../plugins/jqgrid/grid.locale-cn.js"></script>
+<script src="../../plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="../../plugins/ztree/jquery.ztree.all.min.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../libs/ajaxupload.js"></script>
+</head>
+<body>
+<div id="rrapp" v-cloak>
+	<div v-show="showList">
+		<div class="grid-btn">
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.userName" @keyup.enter="query" placeholder="用户名">
+			</div>
+			<div class="form-group col-sm-2">
+				<input type="text" class="form-control" v-model="q.loginNum" @keyup.enter="query" placeholder="学号">
+			</div>
+			<a class="btn btn-default" @click="query">查询</a>
+			<a v-if="hasPermission('sys:facetoken:upload')"  class="btn btn-primary"  @click="addUser"><i class="fa fa-plus"></i>&nbsp;人脸注册</a>
+			<a v-if="hasPermission('sys:facetoken:update')"  class="btn btn-primary" @click="updateUser"><i class="fa fa-pencil-square-o"></i>&nbsp;人脸更新</a>
+			<a  v-if="hasPermission('sys:facetoken:delete')" class="btn btn-primary" @click="deleteUser"><i class="fa fa-trash-o"></i>&nbsp;人脸删除</a>
+		</div>
+	    <table id="jqGrid"></table>
+	    <div id="jqGridPager"></div>
+    </div>
+	<div v-show="!showList" class="panel panel-default">
+		<form class="form-horizontal" method="post" id="uploadForom" enctype="multipart/form-data">
+			<div class="form-group">
+				<div class="col-sm-2 control-label">学号</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" v-model="user.loginNum"   disabled="disabled"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">姓名</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control"  v-model="user.userName" disabled="disabled"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">班级</div>
+				<div class="col-sm-10">
+					<input type="text" class="form-control"  v-model="user.deptName" disabled="disabled"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label">人脸图片</div>
+				<div class="col-sm-10">
+					<input type="file"   id="picFile" name="picFile" value="选择图片">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-2 control-label"></div>
+				<div class="col-sm-10">
+					<input type="button" class="btn btn-primary" @click="upload"  value="上传"/>
+					&nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="../../js/modules/ams/faceManager.js"></script>
+</body>
+</html>

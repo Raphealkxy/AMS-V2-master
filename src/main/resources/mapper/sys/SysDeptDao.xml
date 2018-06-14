@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eric.modules.sys.dao.SysDeptDao">
+    <select id="queryDetpIdList" resultType="long">
+        select dept_id from sys_dept where parent_id = #{value} and del_flag = 0
+    </select>
+    <select id="queryClassList" resultType="com.eric.modules.sys.entity.SysDeptEntity"
+            parameterType="com.eric.modules.ams.param.SearchClassParam">
+        SELECT
+            d.*,
+            p.name as parentName
+        FROM
+            sys_dept d
+        LEFT JOIN sys_dept p ON p.dept_id = d.parent_id
+        <where>
+            d.dept_type = 1
+            <if test="param.deptName != null and param.deptName.trim() != ''">
+                and d.`name` like concat('%',#{param.deptName},'%')
+            </if>
+            <if test="param.parentName != null and param.parentName.trim() != ''">
+                and p.name like concat('%',#{param.parentName},'%')
+            </if>
+        </where>
+        <choose>
+            <when test="param.sidx != null and param.sidx.trim() != ''">
+                order by r.${param.sidx} ${param.order}
+            </when>
+            <otherwise>
+                order by d.dept_id asc
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="querySonDeptList" resultType="long">
+        select dept_id from sys_dept where parent_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+                                           and del_flag = 0
+    </select>
+
+    <select id="deleteBatch">
+        delete from sys_dept where dept_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="selectDeptIdsByStuIds" resultType="java.lang.Long">
+        select DISTINCT dept_id from sys_user WHERE user_id  in
+        <foreach item="id" collection="studentIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getDeptGroupsNameByIds" resultType="java.lang.String">
+        select GROUP_CONCAT(group_name) from sys_dept WHERE dept_id  in
+        <foreach item="id" collection="deptIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

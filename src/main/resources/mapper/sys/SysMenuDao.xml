@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eric.modules.sys.dao.SysMenuDao">
+    <select id="queryListParentId" resultType="com.eric.modules.sys.entity.SysMenuEntity">
+        select * from sys_menu where parent_id = #{parentId} order by order_num asc
+    </select>
+    <select id="queryList" resultType="com.eric.modules.sys.entity.SysMenuEntity">
+    select m.*,(select p.name from sys_menu p where p.menu_id = m.parent_id) as parentName
+    from sys_menu m
+    </select>
+    <delete id="deleteBatch">
+        delete from sys_menu where menu_id in
+        <foreach item="menuId" collection="array" open="(" separator="," close=")">
+            #{menuId}
+        </foreach>
+        ;
+        delete from sys_role_menu where menu_id in
+        <foreach item="menuId" collection="array" open="(" separator="," close=")">
+            #{menuId}
+        </foreach>
+    </delete>
+    <select id="queryNotButtonList" resultType="com.eric.modules.sys.entity.SysMenuEntity">
+        select * from sys_menu where type != 2 order by order_num asc
+    </select>
+</mapper>
